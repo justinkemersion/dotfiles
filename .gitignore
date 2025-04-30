@@ -1,0 +1,84 @@
+# Ignore the bare git repo itself!
+/.dotfiles.git/
+
+# Ignore the gitignore file specific to this repo alias (if you create one later)
+/.config-gitignore
+
+# Secrets, Credentials, History (NEVER commit these)
+/.ssh/          # Add specific SAFE files like config manually if needed, NEVER keys
+/.gnupg/
+/.password-store/
+/.p             # The suspicious root-owned file
+/.bash_history
+/.zsh_history
+/.viminfo
+/.keychain/
+*.local         # Convention for local overrides/secrets (e.g., .zshrc.local)
+
+# Cache, State, Logs
+/.cache/
+/.local/share/  # Often contains app data/state, not just configs
+/.mozilla/
+/.librewolf/
+/.config/chromium/
+/.config/'Code - OSS'/   # Track settings.json explicitly if desired
+/.config/pulse.bak/
+/.config/dconf/
+/.npm/
+/.gradle/
+/.wget-hsts
+/.zcompdump*
+sway.log
+/.pki/
+/.lyrics/       # Unless you specifically want versioned lyrics
+
+# Language/Tooling Build Artifacts & Dependencies
+/.cargo/        # Track Cargo.toml/.lock explicitly if desired
+/.rustup/
+node_modules/
+target/
+venv/
+mtkclient-venv/ # Your specific python venv
+android-sdk-libs/ # Likely SDK/build files
+bv9200/         # Likely build/temp files
+*.pyc
+__pycache__/
+
+# Standard User Dirs (XDG) & Mount Points
+/Desktop/
+/Documents/
+/Downloads/
+/Music/         # Directory for music files (ignored). Track mpd/ncmpcpp configs explicitly
+/Pictures/
+/Public/
+/Templates/
+/Videos/
+/external_hdd*/
+/media/         # Your mount point symlink target
+/mnt/
+
+# Specific Project/Repo/Temp Dirs
+/Projects/      # Contains other repos/projects
+/repos/         # Your directory for clones
+/backup/
+/temp/
+
+# IDE/Editor State (track explicit config files instead)
+/.vscode-oss/
+
+# Oh My Zsh (Managed separately, usually has its own .git)
+/.oh-my-zsh/
+/.shell.pre-oh-my-zsh
+/.zshrc.pre-oh-my-zsh
+
+# OS / Temporary files
+*~
+*.swp
+*.bak
+.DS_Store
+
+# Large Files / Data
+# Add any other large data files or directories here
+
+# Scripts - Consider moving to ~/.local/bin and tracking that explicitly
+avbtool.py      # Add back if you want it versioned in HOME, but .local/bin is better
