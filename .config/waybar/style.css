@@ -1,0 +1,97 @@
+* {
+  /* Option 1: If using a Nerd Font patched version of JetBrains Mono */
+  /* font-family: "JetBrainsMono Nerd Font", monospace; */
+
+  /* Option 2: If using JetBrains Mono and a separate symbol font */
+  font-family: "JetBrains Mono", "NerdFontsSymbols", FontAwesome, monospace;
+
+  /* Adjust font-size if needed */
+  font-size: 14px;
+
+  /* Keep your desired colors */
+  color: #ffffff;
+  /* background: #1a1a1a; */ /* Generally avoid setting background on *; set on #waybar */
+  border: none; /* Reset borders */
+  border-radius: 0; /* Reset border radius */
+}
+
+#waybar {
+  background: #1a1b26;
+  border-bottom: 1px solid #414868;
+  color: #ffffff; /* Set default text color for the bar */
+}
+
+/* Rest of your CSS follows... */
+#clock {
+  background: linear-gradient(45deg, #1a1b26, #2a2b36);
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 0 5px;
+  transition: all 0.3s ease;
+}
+
+#clock:hover {
+  background: linear-gradient(45deg, #414868, #51587a);
+  color: #b4f9f8;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+#clock:active {
+  background-color: #ff7a93;
+}
+
+#tooltip {
+  background-color: #1a1b26;
+  color: #b4f9f8;
+  border: 1px solid #414868;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+}
+
+#battery, #network, #cpu, #memory {
+  padding: 5px 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  background-color: #2a2b36;
+}
+
+#battery.charging {
+  color: #a6e3a1;
+}
+
+#network.disconnected {
+  color: #f38ba8;
+}
+
+#cpu {
+  color: #89b4fa;
+}
+
+#memory {
+  color: #f9e2af;
+}
+
+#workspaces button {
+  padding: 0 5px;
+  color: #ffffff;
+}
+
+#workspaces button.focused {
+  background-color: #414868;
+  color: #b4f9f8;
+}
+
+#workspaces button:hover {
+  background-color: #51587a;
+}
+
+#mode {
+  padding: 0 10px;
+  color: #f9e2af;
+}
+
+#window {
+  padding: 0 10px;
+  color: #cdd6f4;
+}
