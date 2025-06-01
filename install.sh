@@ -11,4 +11,6 @@ for script in $DOTFILES_DIR/.local/bin/*; do
     ln -sf "$script" ~/.local/bin/
 done
 
+ln -sf $DOTFILES_DIR/.config/alacritty ~/.config/alacritty
+
 echo "Dotfiles installed. Create ~/.zshrc.local for sensitive configs."
