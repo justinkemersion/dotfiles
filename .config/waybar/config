@@ -1,0 +1,54 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "modules-left": ["sway/workspaces", "sway/mode"],
+  "modules-center": ["sway/window"],
+  "modules-right": ["battery", "network", "cpu", "memory", "alsa", "clock"],
+  "battery": {
+    "format": "{capacity}% {icon}",
+    "format-icons": ["", "", "", "", ""]
+  },
+  "network": {
+    "format-wifi": "{essid} ({signalStrength}%) ",
+    "format-disconnected": "Disconnected ⚠"
+  },
+  "cpu": {
+    "format": "{usage}% "
+  },
+  "memory": {
+    "format": "{}% "
+  },
+  "alsa": {
+    "mixer": "Headphone",
+    "format": "{volume}% {icon}",
+    "format-muted": "Muted {icon}",
+    "format-icons": {
+        "default": ["", "", ""]
+    },
+    "scroll-step": 5,
+    "on-click": "amixer -q sset Headphone toggle",
+    "on-scroll-up": "amixer -q sset Headphone 5%+",
+    "on-scroll-down": "amixer -q sset Headphone 5%-"
+  },
+   "clock": {
+    // Changed %H to %I and added %p for AM/PM
+    "format": "{:%I:%M %p}",
+    "tooltip": true,
+    // Optionally change tooltip format too
+    "tooltip-format": "{:%A, %B %d, %Y %I:%M %p}",
+    "interval": 60
+  },
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "format": "{name}"
+  },
+  "sway/mode": {
+    "format": "{}"
+  },
+  "sway/window": {
+    "format": "{}",
+    "max-length": 50
+  }
+}
