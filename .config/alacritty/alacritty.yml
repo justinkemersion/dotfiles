@@ -1,0 +1,52 @@
+# Alacritty Config for Mac PowerBook
+window:
+  opacity: 0.95
+  padding:
+    x: 5
+    y: 5
+  decorations: full
+
+font:
+  normal:
+    family: DejaVu Sans Mono
+    style: Regular
+  bold:
+    family: DejaVu Sans Mono
+    style: Bold
+  italic:
+    family: DejaVu Sans Mono
+    style: Italic
+  size: 12
+
+colors:
+  primary:
+    background: '#2e3440'
+    foreground: '#d8dee9'
+  normal:
+    black:   '#3b4252'
+    red:     '#bf616a'
+    green:   '#a3be8c'
+    yellow:  '#ebcb8b'
+    blue:    '#81a1c1'
+    magenta: '#b48ead'
+    cyan:    '#88c0d0'
+    white:   '#e5e9f0'
+  bright:
+    black:   '#4c566a'
+    red:     '#bf616a'
+    green:   '#a3be8c'
+    yellow:  '#ebcb8b'
+    blue:    '#81a1c1'
+    magenta: '#b48ead'
+    cyan:    '#8fbcbb'
+    white:   '#eceff4'
+
+cursor:
+  style: Block
+  blinking: Off
+
+key_bindings:
+  - { key: V, mods: Control|Shift, action: Paste }
+  - { key: C, mods: Control|Shift, action: Copy }
+  - { key: Plus, mods: Control, action: IncreaseFontSize }
+  - { key: Minus, mods: Control, action: DecreaseFontSize }
