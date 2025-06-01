@@ -1,0 +1,6 @@
+#!/bin/bash
+if ! mount | grep -q "/home/$USER/media"; then
+    echo "Error: ~/media is not mounted. Please mount it first."
+    exit 1
+fi
+ncmpcpp

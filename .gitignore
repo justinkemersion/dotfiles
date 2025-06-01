@@ -1,0 +1,6 @@
+.zshrc.local
+*.log
+*.tmp
+.DS_Store
+# Add any sensitive scripts in .local/bin
+.local/bin/*secret*

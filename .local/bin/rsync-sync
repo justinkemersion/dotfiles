@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# rsync-sync: Copy files with rsync, no overwrite, progress bar
+# Usage: rsync-sync <source> <destination>
+
+# Check if at least two arguments are provided
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <source> <destination>"
+    exit 1
+fi
+
+# Last argument is the destination
+DEST="${@: -1}"
+
+# Check if destination directory exists, create if it doesn't
+if [ ! -d "$DEST" ]; then
+    mkdir -p "$DEST" || { echo "Error: Failed to create destination '$DEST'"; exit 1; }
+fi
+
+# Check if destination is writable
+if [ ! -w "$DEST" ]; then
+    echo "Error: Destination '$DEST' is not writable"
+    exit 1
+fi
+
+# Collect all source arguments (excluding the last one)
+SOURCES=("${@:1:$#-1}")
+
+# Check if any source exists
+for SRC in "${SOURCES[@]}"; do
+    if [ ! -e "$SRC" ]; then
+        echo "Error: Source '$SRC' does not exist"
+        exit 1
+    fi
+done
+
+# Run rsync with desired options
+rsync -av --progress --ignore-existing --human-readable "${SOURCES[@]}" "$DEST"
+
+# Exit with rsync's status code
+exit $?
