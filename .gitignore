@@ -4,3 +4,9 @@
 .DS_Store
 # Add any sensitive scripts in .local/bin
 .local/bin/*secret*
+# Exclude Beets database and state files
+.config/beets/library.db
+.config/beets/library.db.bak
+.config/beets/state.pickle
+# Exclude backup files
+*.bak
