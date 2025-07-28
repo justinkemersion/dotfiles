@@ -1,54 +1,54 @@
 {
-  "layer": "top",
-  "position": "top",
-  "height": 30,
-  "modules-left": ["sway/workspaces", "sway/mode"],
-  "modules-center": ["sway/window"],
-  "modules-right": ["battery", "network", "cpu", "memory", "alsa", "clock"],
-  "battery": {
-    "format": "{capacity}% {icon}",
-    "format-icons": ["", "", "", "", ""]
-  },
-  "network": {
-    "format-wifi": "{essid} ({signalStrength}%) ",
-    "format-disconnected": "Disconnected ⚠"
-  },
-  "cpu": {
-    "format": "{usage}% "
-  },
-  "memory": {
-    "format": "{}% "
-  },
-  "alsa": {
-    "mixer": "Headphone",
-    "format": "{volume}% {icon}",
-    "format-muted": "Muted {icon}",
-    "format-icons": {
-        "default": ["", "", ""]
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "modules-left": ["hyprland/workspaces"],
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "persistent-workspaces": {
+            "LVDS-1": [1, 2, 3, 4, 5]
+        },
+        "all-outputs": false,
+        "sort-by-number": true
     },
-    "scroll-step": 5,
-    "on-click": "amixer -q sset Headphone toggle",
-    "on-scroll-up": "amixer -q sset Headphone 5%+",
-    "on-scroll-down": "amixer -q sset Headphone 5%-"
-  },
-   "clock": {
-    // Changed %H to %I and added %p for AM/PM
-    "format": "{:%I:%M %p}",
-    "tooltip": true,
-    // Optionally change tooltip format too
-    "tooltip-format": "{:%A, %B %d, %Y %I:%M %p}",
-    "interval": 60
-  },
-  "sway/workspaces": {
-    "disable-scroll": true,
-    "all-outputs": true,
-    "format": "{name}"
-  },
-  "sway/mode": {
-    "format": "{}"
-  },
-  "sway/window": {
-    "format": "{}",
-    "max-length": 50
-  }
+    "modules-center": ["hyprland/window"],
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 50
+    },
+    "modules-right": ["custom/ai","battery", "network", "custom/volume", "clock"],
+    "custom/volume": {
+        "format": "Vol {}",
+        "exec": "amixer -D hw:2 get Headset | grep -o '[0-9]*%' | head -1 || echo 'N/A'",
+        "interval": 1,
+        "on-click": "amixer -D hw:2 -q sset Headset toggle",
+        "on-scroll-up": "amixer -D hw:2 -q sset Headset 5%+",
+        "on-scroll-down": "amixer -D hw:2 -q sset Headset 5%-"
+    },
+    "custom/desktops": {
+        "format": "Desktops"
+    },
+    "custom/window": {
+        "format": "No Window Title"
+    },
+    //"custom/ai": {
+    //    "exec": "python /home/justin/Projects/messing-with-codex/ai_chat.py",
+    //    "interval": 3600, // Update every hour
+    //    "format": "{}",
+    //    "max-length": 50
+    //},
+    "battery": {
+        "format": "{capacity}% {icon}",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "network": {
+        "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-disconnected": "Disconnected ⚠"
+    },
+    "clock": {
+        "format": "{:%I:%M %p}",
+        "tooltip": true,
+        "tooltip-format": "{:%A, %B %d, %Y %I:%M %p}",
+        "interval": 60
+    }
 }

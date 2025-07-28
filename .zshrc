@@ -1,184 +1,137 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+# ~/.zshrc - Zsh configuration file
+# This file is managed via dotfiles repo. Sensitive/private settings should go in ~/.zshrc.local (gitignored).
 
-# Path to your Oh My Zsh installation.
+# --- Oh My Zsh Setup ---
+
+# Path to Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# Theme configuration.
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes for options.
 ZSH_THEME="robbyrussell"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
+# Uncomment to load a random theme each time (from candidates list).
+# ZSH_THEME="random"
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# Plugins to load (add wisely to avoid slowdowns).
+# Standard plugins are in $ZSH/plugins/; custom in $ZSH_CUSTOM/plugins/.
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting pass pip)
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-#source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
+# Source Oh My Zsh.
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+# --- Path and Environment Variables ---
 
-# export MANPATH="/usr/local/man:$MANPATH"
+# Extend PATH with user-local bins, Cargo, npm, Android SDK, etc.
+# Consolidated to avoid duplicates; order matters (user paths first).
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.npm-global/bin:$PATH"
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+# Android SDK setup (adjust paths if SDK location changes).
+export ANDROID_HOME="$HOME/Android/Sdk"  # Common default; was /opt/android-sdk in old config.
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+export PATH="$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools"
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+# Java setup (for Android or other tools).
+export JAVA_HOME="/usr/lib/jvm/default"  # Use 'default' for flexibility; was java-17-openjdk.
 
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
+# DBUS for desktop sessions (e.g., if running in a non-standard environment).
+export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
 
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-#
-export PATH="$HOME/.local/bin:$PATH"
+# --- SSH Key Management ---
 
-#eval $(keychain --eval --quiet ~/.ssh/id_ed25519_emersion)
-# Load keychain for SSH key management
-if [[ -n "$PS1" && -f ~/.ssh/id_ed25519 ]]; then
-    eval $(keychain --eval --quiet ~/.ssh/id_ed25519_emersion)
-fi
+# Load keychain for SSH keys if interactive shell and key exists.
+# Adjust key name/path as needed; keep actual keys secure.
+#if [[ -n "$PS1" && -f ~/.ssh/id_ed25519 ]]; then
+#    eval $(keychain --eval --quiet ~/.ssh/id_ed25519)
+#fi
 
-# Source local/private settings if the file exists
-if [[ -f ~/.zshrc.local ]]; then
-  source ~/.zshrc.local
-fi
-export PATH="$PATH:/home/justin/.local/bin"
-export PATH="$HOME/.cargo/bin:$PATH"
-export ANDROID_HOME=/opt/android-sdk
-export ANDROID_SDK_ROOT=/opt/android-sdk
-export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-alias config='/usr/bin/git --git-dir=/home/justin/.dotfiles.git/ --work-tree=/home/justin'
-# Function to update Arch Linux Pacman mirrors using reflector
+# --- Aliases ---
+
+# Dotfiles management with bare Git repo.
+# Usage: config status, config add .zshrc, etc.
+alias config='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
+
+# Qutebrowser profiles (for separated browsing sessions, e.g., personal/work/AI).
+# Default: personal.
+alias qute='qutebrowser --basedir ~/.config/qutebrowser-personal'
+alias qute-work='qutebrowser --basedir ~/.config/qutebrowser-work'
+alias qute-grok='qutebrowser --basedir ~/.config/qutebrowser-grok'
+alias qute-gemini='qutebrowser --basedir ~/.config/qutebrowser-gemini'
+alias qute-claude='qutebrowser --basedir ~/.config/qutebrowser-claude'
+
+# Add more personal aliases here or in $ZSH_CUSTOM/aliases.zsh.
+# Example: alias ll='ls -la'
+
+# --- Functions ---
+
+# Update Pacman mirrors using reflector (for Arch/EndeavorOS).
+# Fetches fastest mirrors from specified countries.
 # Usage: pacman_update_mirrors
-# Optional Environment Variable:
-#   Set REFLECTOR_COUNTRIES="Country1,Country2" (e.g., "US,Canada") before running
-#   to override the default country list.
+# Customize via env var: export REFLECTOR_COUNTRIES="US,Canada" before running.
+# Requires sudo; run 'sudo pacman -Syu' after to sync.
 pacman_update_mirrors() {
-  # --- Configuration ---
-  # Default countries if REFLECTOR_COUNTRIES is not set (edit as needed)
-  local default_countries="US"
-  # Number of latest mirrors to fetch
-  local num_latest=20
-  # Protocol to use (https is recommended)
-  local protocol="https"
-  # How to sort the mirrors (rate is download speed)
-  local sort_method="rate"
-  # Output file (requires sudo)
-  local output_file="/etc/pacman.d/mirrorlist"
-  # --- End Configuration ---
+    # Configuration defaults (override with env vars if needed).
+    local countries="${REFLECTOR_COUNTRIES:-US}"  # Comma-separated list.
+    local num_latest=20                           # Number of mirrors.
+    local protocol="https"                        # Preferred protocol.
+    local sort_method="rate"                      # Sort by download speed.
+    local output_file="/etc/pacman.d/mirrorlist"  # Requires sudo.
 
-  # Use environment variable for countries if set, otherwise use default
-  local countries="${REFLECTOR_COUNTRIES:-$default_countries}"
+    echo "🚀 Updating Pacman mirrorlist..."
+    echo "   Countries: $countries"
+    echo "   Protocol: $protocol"
+    echo "   Sort: $sort_method"
+    echo "   Latest: $num_latest"
+    echo "   Output: $output_file"
 
-  echo "🚀 Updating Pacman mirrorlist using reflector..."
-  echo "   Countries:      ${countries}"
-  echo "   Protocol:       ${protocol}"
-  echo "   Sort Method:    ${sort_method}"
-  echo "   Number Latest:  ${num_latest}"
-  echo "   Saving to:      ${output_file}"
-  echo ""
-  echo "   Running reflector (requires sudo)..."
-
-  # Execute reflector with sudo
-  if command sudo reflector \
-    --verbose \
-    --country "${countries}" \
-    --protocol "${protocol}" \
-    --latest "${num_latest}" \
-    --sort "${sort_method}" \
-    --save "${output_file}"; then
-    echo ""
-    echo "✅ Mirrorlist updated successfully!"
-    echo "   Run 'sudo pacman -Syu' to synchronize package databases and upgrade."
-  else
-    echo ""
-    echo "❌ Error occurred while updating mirrorlist. Please check reflector's output above."
-    # Optional: return non-zero exit code to indicate failure in scripts
-    return 1
-  fi
+    # Run reflector with sudo.
+    sudo reflector --verbose \
+        --country "$countries" \
+        --protocol "$protocol" \
+        --latest "$num_latest" \
+        --sort "$sort_method" \
+        --save "$output_file" && \
+        echo "✅ Updated! Run 'sudo pacman -Syu' next." || \
+        echo "❌ Error updating mirrors."
 }
 
-export PATH=~/.npm-global/bin:$PATH
+# --- Oh My Zsh Options (Uncomment to Enable) ---
 
-# --- Optional: Set your preferred countries here ---
-# Uncomment and edit the line below if you want to permanently set
-# different countries instead of the default "US"
-# export REFLECTOR_COUNTRIES="US,Canada,Germany"
-# -----------------------------------------------------
+# Auto-update behavior.
+zstyle ':omz:update' mode reminder  # Remind to update; alternatives: auto, disabled.
+zstyle ':omz:update' frequency 13   # Check every 13 days.
+
+# Case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Hyphen-insensitive completion (_ and - interchangeable).
+# HYPHEN_INSENSITIVE="true"
+
+# Disable magic functions if pasting URLs causes issues.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Show waiting dots for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# History timestamp format.
+# HIST_STAMPS="yyyy-mm-dd"
+
+# Preferred editor.
+export EDITOR='lvim'  # Or vim; can override based on SSH.
+# if [[ -n $SSH_CONNECTION ]]; then
+#     export EDITOR='vim'
+# fi
+
+# Language environment (if needed).
+# export LANG=en_US.UTF-8
+
+# --- Local/Private Overrides ---
+
+# Source local file for sensitive settings (e.g., API keys). Gitignore this!
+if [[ -f ~/.zshrc.local ]]; then
+    source ~/.zshrc.local
+fi

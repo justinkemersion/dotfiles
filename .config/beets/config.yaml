@@ -1,85 +1,131 @@
-# Target directory for the Beets organized library
-directory: ~/Music  # << CHANGED TO YOUR DESIRED NEW LOCATION
+# ======================================================
+# Recommended Configuration
+# ======================================================
 
-# Beets database location
-library: ~/.config/beets/library.db
+directory: /home/justin/media/Music
+library: /home/justin/.config/beets/library.db
+pluginpath: /home/justin/.local/share/beets/plugins
 
 # --- Import Settings ---
 import:
-  copy: yes          # Copies files to your 'directory'
-  move: no           # Leaves originals in place (safer for now)
-  delete: no         # Does not delete originals after copy (safer for now)
-  quiet: no          # Shows what Beets is doing
-  resume: yes        # Allows resuming interrupted imports
-  timid: no          # Beets will be more assertive with matches (good with your thresholds)
-  autotag: yes       # Enable MusicBrainz tagging
-  log: ~/.config/beets/beets_import.log # << CHANGED log location for clarity
-  # duplicate_action: skip # This applies DURING import for files already IN THE BEETS LIBRARY.
-                         # The `duplicates` plugin handles duplicates more broadly.
-                         # Let's leave it to skip for now to avoid accidental overwrites if importing the same source twice.
+  copy: yes
+  move: no
+  delete: no
+  quiet: no
+  resume: yes
+  timid: no
+  autotag: yes
+  log: /home/justin/.config/beets/beets_import.log
+  duplicate_action: ask
 
 # --- Path Formats ---
 paths:
   default: $albumartist/$album%aunique{}/$track $title
   comp: Compilations/$album%aunique{}/$track $title
   singleton: Singletons/$artist/$title
-  # Consider adding year to album folder if you like:
-  # default: $albumartist/$year - $album%aunique{}/$track $title
 
 # --- Enabled Plugins ---
-plugins: duplicates scrub fetchart lastgenre embedart # Added some useful ones
+plugins: duplicates scrub fetchart lastgenre embedart info edit export replaygain chroma mbsync
 
 # --- Plugin Configuration ---
+
+musicbrainz:
+  extra_tags: [
+      original_date, 
+      original_year, 
+      recording_year, 
+      recording_month, 
+      recording_day,
+      recording_disambig
+  ]
+  host: musicbrainz.org
+  ratelimit: 100
+  releasegroup_types:
+    - live
+    - compilation
+    - soundtrack
+    - remix
+
+oldestdate:
+  auto: yes
+  ignore_track_id: yes
+  filter_on_import: yes
+  prompt_missing_work_id: yes
+  force: no
+  overwrite_date: yes # This will correctly set year, month, day based on the oldest date found.
+  filter_recordings: yes
+  approach: 'releases'
+
+# The item_fields section for 'year' has been removed to avoid conflict with 'oldestdate'.
+
+# ... (rest of your plugin configs like duplicates, scrub, etc. are fine) ...
 duplicates:
-  # action: delete # This is the old way, `delete` option below is current
-  delete: yes       # SAFETY: Keep 'no' until you are VERY confident.
-                   # Change to 'yes' to have `beet duplicates -d` actually delete.
-  strict: yes      # Considers only exact matches for artist/album/track for some checks.
-                   # For broader duplicate finding, you might set to 'no' later,
-                   # but 'yes' is safer to start.
-  checksum: yes    # HIGHLY RECOMMENDED: Compares audio data, not just tags.
-                   # Requires `ffmpeg` or similar to be installed.
-  tiebreak:       # Helps decide which duplicate to keep when auto-deleting (if delete:yes)
-    albumtype: album soundtrack # Prefer full albums or soundtracks
-    format: FLAC MP3 AAC Ogg Vorbis # Prefer lossless or higher quality lossy
-    bitrate: desc # Prefer higher bitrate
+  delete: no
+  strict: yes
+  checksum: md5sum $path
+  tiebreak:
+    albumtype: album soundtrack
+    format: FLAC MP3 AAC Ogg Vorbis
+    bitrate: desc
 
 scrub:
-  auto: yes        # Automatically scrub tags on import
+  auto: yes
 
 fetchart:
   auto: yes
   minwidth: 300
-  maxwidth: 1000   # Or your preferred max size
-  # sources: coverart wikipedia albumart ... # Prioritize sources
-  cautious: no     # If 'yes', only downloads if no art is present. 'no' will try to find better art.
-  store_source: yes # Stores the source of the album art in a flexible attribute
+  maxwidth: 1000
+  cautious: no
+  store_source: yes
 
 embedart:
   auto: yes
-  maxwidth: 1000   # Embed art up to this width
-  # ifempty: yes   # Only embed if no art is already embedded (use with caution if fetchart might get better art)
+  maxwidth: 1000
 
 lastgenre:
-  auto: yes
-  source: album    # Get genre from album level on MusicBrainz
-  # canonical: yes # Use a canonical genre tree (optional, more complex)
-  # fallback: 'Unknown Genre'
+  whitelist: yes
+  count: 3
+  source: album
+  min_weight: 10
+  fallback: Unknown
+  force: no
+  separator: ', '
+  prefer_specific: no
+  canonical: no
+
+replaygain:
+  backend: ffmpeg
+  auto: no
+  overwrite: yes
+  threads: 1
+  targetlevel: 89
 
 # --- Matching Thresholds & Preferences ---
 match:
-  strong_rec_thresh: 0.10
-  medium_rec_thresh: 0.30
+  strong_rec_thresh: 0.04
+  medium_rec_thresh: 0.25
   weak_rec_thresh: 0.50
-  # Ignored tags (MusicBrainz often has better data for these)
-  ignored: [asin, amazon_id, acoustid_fingerprint, acoustid_id, musicbrainz_albumid, musicbrainz_artistid, musicbrainz_releasegroupid, musicbrainz_trackid, script, language]
-
+  use_original: yes
+  ignored: [asin, amazon_id, acoustid_fingerprint, acoustid_id, script, language]
   preferred:
-    media: Digital Media # Prefer "Digital Media" releases
-    original_year: yes   # Prefer releases that match the original release year
-    countries: ['US', 'GB', 'XW', 'CA', 'AU', 'DE', 'FR', 'JP'] # Preferred release countries
-    formats: ['FLAC', 'ALAC', 'AIFF', 'WAV', 'MP3', 'AAC', 'OGG'] # Prefer these formats in order
+    media: [CD, Digital Media]
+    original_year: yes
+    countries: ['US', 'GB', 'XW', 'CA', 'AU', 'DE', 'FR', 'JP']
+    formats: ['FLAC', 'ALAC', 'AIFF', 'WAV', 'MP3', 'AAC', 'OGG']
+  ignored:
+    media: [Vinyl, Cassette, Other]
 
-# You can also add an 'overwrite_null' section if you want to preserve certain null fields
-# overwrite_null:
-#   albumartist: no # Don't overwrite a null albumartist if the source file has it
+# In your config.yaml
+
+#asciify_paths: yes
+
+#replace:
+#    '[\\/]': _  # Replace slashes with underscores in tags.
+#    '^\.': _    # Replace leading dots with underscores.
+#    '[\x00-\x1f]': _ # Replace non-printable characters with underscores.
+#    '[<>:"\?\*\|]': _ # Replace characters illegal in Windows paths.
+#    '’': "'"    # Replace right single quote with a plain apostrophe.
+#    '‘': "'"    # Replace left single quote with a plain apostrophe.
+#    '”': '"'    # Replace right double quote with a plain double quote.
+#    '“': '"'    # Replace left double quote with a plain double quote.
+#    '…': ...    # Replace ellipsis with three periods.
